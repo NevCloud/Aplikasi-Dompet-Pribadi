@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dompet Ku - Digital Wallet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-green: #2ECC71;
+            --dark-green: #27AE60;
+            --light-green: #A8E6CF;
+            --yellow: #F4D03F;
+            --bg-light: #F8F9FA;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 20px 15px 100px;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            border-radius: 25px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: var(--yellow);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .period-tabs {
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .period-tab {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .period-tab.active {
+            background: var(--primary-green);
+            color: white;
+        }
+        
+        .chart-card {
+            background: var(--dark-green);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .chart-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 120px;
+            margin: 20px 0;
+        }
+        
+        .bar {
+            flex: 1;
+            background: rgba(255,255,255,0.3);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            min-height: 20px;
+        }
+        
+        .bar.highlight {
+            background: var(--yellow);
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.5rem;
+        }
+        
+        .action-btn.green { background: var(--primary-green); color: white; }
+        .action-btn.yellow { background: var(--yellow); color: #333; }
+        .action-btn.blue { background: #3498DB; color: white; }
+        .action-btn.purple { background: #9B59B6; color: white; }
+        
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .transaction-item:hover {
+            background: var(--bg-light);
+        }
+        
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-right: 15px;
+        }
+        
+        .amount-positive { color: var(--primary-green); }
+        .amount-negative { color: #E74C3C; }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 0;
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: #999;
+            text-decoration: none;
+        }
+        
+        .nav-item.active { color: var(--primary-green); }
+        
+        .btn-primary {
+            background: var(--primary-green);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #E8E8E8;
+            padding: 12px;
+        }
+        
+        .portfolio-card {
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Balance Card -->
+        <div class="balance-card">
+            
+            <div class="balance-label">Total Saldo</div>
+            <div class="balance-amount" id="totalBalance">Rp 0</div>
+            
+        </div>
+
+        <!-- Period Tabs -->
+        <div class="period-tabs">
+            <button class="period-tab" onclick="changePeriod('day')">Day</button>
+            <button class="period-tab active" onclick="changePeriod('week')">Week</button>
+            <button class="period-tab" onclick="changePeriod('month')">Month</button>
+            <button class="period-tab" onclick="changePeriod('year')">Year</button>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Pengeluaran Mingguan</h5>
+                <span id="totalSpent" class="badge bg-warning">Rp 0</span>
+            </div>
+            <div class="chart-bar" id="chartBar"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="section-header mb-3">
+                <div class="fw-bold">Frequently used</div>
+            </div>
+            <div class="d-flex justify-content-around">
+                <div class="text-center">
+                    <button class="action-btn green" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <small class="d-block mt-2">Income</small>
+                </div>
+                <div class="text-center">
+                    <button class="action-btn yellow" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                        <i class="bi bi-dash-lg"></i>
+                    </button>
+                    <small class="d-block mt-2">Expense</small>
+                </div>
+                <div class="text-center">
+                    <button class="action-btn blue" data-bs-toggle="modal" data-bs-target="#portfolioModal">
+                        <i class="bi bi-wallet2"></i>
+                    </button>
+                    <small class="d-block mt-2">Portfolio</small>
+                </div>
+                <div class="text-center">
+                    <button class="action-btn purple" onclick="loadMonthlyStats()">
+                        <i class="bi bi-graph-up"></i>
+                    </button>
+                    <small class="d-block mt-2">Stats</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Report -->
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="fw-bold">Monthly Report</div>
+            </div>
+            <div class="row g-3" id="monthlyReportGrid"></div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="section-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="fw-bold">Transactions</div>
+            </div>
+            <div id="transactionsList"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col">
+                    <a href="#" class="nav-item active">
+                        <div class="nav-icon"><i class="bi bi-house-fill"></i></div>
+                        <small>Home</small>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="#" class="nav-item" data-bs-toggle="modal" data-bs-target="#portfolioModal">
+                        <div class="nav-icon"><i class="bi bi-wallet2"></i></div>
+                        <small>Portfolio</small>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="#" class="nav-item">
+                        <div class="nav-icon"><i class="bi bi-pie-chart-fill"></i></div>
+                        <small>Stats</small>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="#" class="nav-item">
+                        <div class="nav-icon"><i class="bi bi-person-fill"></i></div>
+                        <small>Profile</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Income Modal -->
+    <div class="modal fade" id="addIncomeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Pemasukan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Portfolio</label>
+                        <select class="form-select" id="incomePortfolio"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nominal</label>
+                        <input type="number" class="form-control" id="incomeAmount" placeholder="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+                        <input type="text" class="form-control" id="incomeDesc" placeholder="Contoh: Gaji">
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="addIncome()">Tambah Pemasukan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal fade" id="addExpenseModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Pengeluaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="limitAlert" class="alert alert-warning d-none"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Portfolio</label>
+                        <select class="form-select" id="expensePortfolio" onchange="checkLimit(this.value)"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nominal</label>
+                        <input type="number" class="form-control" id="expenseAmount" placeholder="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+                        <input type="text" class="form-control" id="expenseDesc" placeholder="Contoh: Makan siang">
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="addExpense()">Tambah Pengeluaran</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div class="modal fade" id="portfolioModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Portfolio Saya</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="portfolioList"></div>
+                    <button class="btn btn-outline-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#addPortfolioModal">
+                        <i class="bi bi-plus-lg"></i> Tambah Portfolio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Portfolio Modal -->
+    <div class="modal fade" id="addPortfolioModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Portfolio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Portfolio</label>
+                        <input type="text" class="form-control" id="portfolioName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Saldo Awal</label>
+                        <input type="number" class="form-control" id="portfolioSaldo" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Limit Harian</label>
+                        <input type="number" class="form-control" id="portfolioLimit" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Icon</label>
+                        <input type="text" class="form-control" id="portfolioIcon" value="💰">
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="createPortfolio()">Buat Portfolio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let portfolios = [];
+        let transactions = [];
+        let currentPeriod = 'week';
+
+        const formatRupiah = (num) => {
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(num);
+        };
+
+        const loadData = async () => {
+            await Promise.all([loadPortfolios(), loadTransactions(), loadWeeklyStats(), loadMonthlyStats()]);
+        };
+
+        const loadPortfolios = async () => {
+            const res = await fetch('/api/portfolios');
+            portfolios = await res.json();
+            updateTotalBalance();
+            updatePortfolioSelects();
+            updatePortfolioList();
+        };
+
+        const updateTotalBalance = () => {
+            const total = portfolios.reduce((sum, p) => sum + p.saldo, 0);
+            document.getElementById('totalBalance').textContent = formatRupiah(total);
+        };
+
+        const updatePortfolioSelects = () => {
+            const html = portfolios.map(p => `<option value="${p.id}">${p.icon} ${p.nama}</option>`).join('');
+            document.getElementById('incomePortfolio').innerHTML = html;
+            document.getElementById('expensePortfolio').innerHTML = html;
+        };
+
+        const updatePortfolioList = () => {
+            const html = portfolios.map(p => `
+                <div class="portfolio-card bg-${p.color}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div style="font-size: 2rem;">${p.icon}</div>
+                            <h6 class="mt-2">${p.nama}</h6>
+                            <h4 class="mb-0">${formatRupiah(p.saldo)}</h4>
+                            ${p.limit_harian > 0 ? `<small>Limit: ${formatRupiah(p.limit_harian)}/hari</small>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('portfolioList').innerHTML = html;
+        };
+
+        const loadTransactions = async () => {
+            const res = await fetch('/api/transactions');
+            transactions = await res.json();
+            updateTransactionsList();
+        };
+
+        const updateTransactionsList = () => {
+            const html = transactions.slice(0, 10).map(t => {
+                const isExpense = t.jenis === 'pengeluaran';
+                const date = new Date(t.waktu);
+                return `
+                    <div class="transaction-item">
+                        <div class="transaction-icon bg-${t.portfolio_color} bg-opacity-25">
+                            <span>${t.portfolio_icon}</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${t.keterangan || t.portfolio_nama}</div>
+                            <small class="text-muted">${date.toLocaleDateString('id-ID')}</small>
+                        </div>
+                        <div class="fw-bold ${isExpense ? 'amount-negative' : 'amount-positive'}">
+                            ${isExpense ? '-' : '+'}${formatRupiah(t.biaya_pengeluaran)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('transactionsList').innerHTML = html || '<p class="text-center text-muted">Belum ada transaksi</p>';
+        };
+
+        const loadWeeklyStats = async () => {
+            const res = await fetch('/api/stats/weekly');
+            const data = await res.json();
+            updateChart(data);
+        };
+
+        const updateChart = (data) => {
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const today = new Date().getDay();
+            const maxValue = Math.max(...data.map(d => d.pengeluaran), 1);
+            const total = data.reduce((sum, d) => sum + d.pengeluaran, 0);
+            
+            document.getElementById('totalSpent').textContent = formatRupiah(total);
+            
+            const html = days.map((day, i) => {
+                const dayData = data.find(d => new Date(d.date).getDay() === (i + 1) % 7);
+                const value = dayData ? dayData.pengeluaran : 0;
+                const height = (value / maxValue) * 100;
+                return `
+                    <div class="bar ${i === today - 1 ? 'highlight' : ''}" style="height: ${height}%">
+                        <div class="bar-label">${day}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('chartBar').innerHTML = html;
+        };
+
+        const loadMonthlyStats = async () => {
+            const res = await fetch('/api/stats/monthly');
+            const data = await res.json();
+            const html = data.filter(d => d.pengeluaran > 0 || d.pemasukan > 0).map(d => `
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div style="font-size: 2rem;">${d.icon}</div>
+                        <div class="stat-value">${formatRupiah(d.pengeluaran)}</div>
+                        <div class="stat-label">${d.nama}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('monthlyReportGrid').innerHTML = html || '<p class="text-center text-muted">Belum ada data</p>';
+        };
+
+        const addIncome = async () => {
+            const data = {
+                id_porto: document.getElementById('incomePortfolio').value,
+                biaya_pengeluaran: document.getElementById('incomeAmount').value,
+                keterangan: document.getElementById('incomeDesc').value,
+                jenis: 'pemasukan'
+            };
+            
+            const res = await fetch('/api/transactions', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('addIncomeModal')).hide();
+                document.getElementById('incomeAmount').value = '';
+                document.getElementById('incomeDesc').value = '';
+                loadData();
+            } else {
+                const error = await res.json();
+                alert(error.error);
+            }
+        };
+
+        const addExpense = async () => {
+            const data = {
+                id_porto: document.getElementById('expensePortfolio').value,
+                biaya_pengeluaran: document.getElementById('expenseAmount').value,
+                keterangan: document.getElementById('expenseDesc').value,
+                jenis: 'pengeluaran'
+            };
+            
+            const res = await fetch('/api/transactions', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('addExpenseModal')).hide();
+                document.getElementById('expenseAmount').value = '';
+                document.getElementById('expenseDesc').value = '';
+                loadData();
+            } else {
+                const error = await res.json();
+                alert(error.error);
+            }
+        };
+
+        const checkLimit = async (portfolioId) => {
+            const res = await fetch(`/api/check-limit/${portfolioId}`);
+            const data = await res.json();
+            const alert = document.getElementById('limitAlert');
+            
+            if (data.exceeded) {
+                alert.textContent = `Peringatan! Anda sudah melebihi limit harian (${formatRupiah(data.spent)} / ${formatRupiah(data.limit)})`;
+                alert.classList.remove('d-none');
+            } else if (data.limit > 0) {
+                alert.textContent = `Sisa limit hari ini: ${formatRupiah(data.remaining)}`;
+                alert.classList.remove('d-none');
+                alert.classList.remove('alert-warning');
+                alert.classList.add('alert-info');
+            } else {
+                alert.classList.add('d-none');
+            }
+        };
+
+        const createPortfolio = async () => {
+            const data = {
+                nama: document.getElementById('portfolioName').value,
+                saldo: document.getElementById('portfolioSaldo').value,
+                limit_harian: document.getElementById('portfolioLimit').value,
+                icon: document.getElementById('portfolioIcon').value
+            };
+            
+            const res = await fetch('/api/portfolios', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('addPortfolioModal')).hide();
+                loadPortfolios();
+            }
+        };
+
+        const changePeriod = (period) => {
+            currentPeriod = period;
+            document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            if (period === 'week') loadWeeklyStats();
+        };
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
