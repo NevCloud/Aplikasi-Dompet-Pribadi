@@ -1,13 +1,4 @@
-"""
-Flask Personal Wallet Application with MySQL (dompet_ku database)
-
-Installation:
-1. pip install flask flask-cors mysql-connector-python
-2. Import dompet_ku.sql to MySQL
-3. Update DB_CONFIG with your credentials
-4. Run: python app.py
-5. Open: http://localhost:5000
-"""
+"""http://localhost:5000"""
 
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
