@@ -1,4 +1,4 @@
-"""http://localhost:5000"""
+"""gunakan link http://localhost:5000"""
 
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS

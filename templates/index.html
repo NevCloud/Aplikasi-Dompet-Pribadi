@@ -223,7 +223,6 @@
 </head>
 <body>
     <div class="main-container">
-        <!-- Balance Card -->
         <div class="balance-card">
             
             <div class="balance-label">Total Saldo</div>
@@ -231,7 +230,6 @@
             
         </div>
 
-        <!-- Period Tabs -->
         <div class="period-tabs">
             <button class="period-tab" onclick="changePeriod('day')">Day</button>
             <button class="period-tab active" onclick="changePeriod('week')">Week</button>
@@ -239,7 +237,6 @@
             <button class="period-tab" onclick="changePeriod('year')">Year</button>
         </div>
 
-        <!-- Chart -->
         <div class="chart-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Pengeluaran Mingguan</h5>
@@ -248,7 +245,6 @@
             <div class="chart-bar" id="chartBar"></div>
         </div>
 
-        <!-- Quick Actions -->
         <div class="quick-actions">
             <div class="section-header mb-3">
                 <div class="fw-bold">Frequently used</div>
@@ -281,7 +277,6 @@
             </div>
         </div>
 
-        <!-- Monthly Report -->
         <div class="section-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="fw-bold">Monthly Report</div>
@@ -289,7 +284,6 @@
             <div class="row g-3" id="monthlyReportGrid"></div>
         </div>
 
-        <!-- Transactions -->
         <div class="section-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="fw-bold">Transactions</div>
@@ -298,7 +292,6 @@
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="bottom-nav">
         <div class="container">
             <div class="row text-center">
@@ -329,8 +322,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Income Modal -->
     <div class="modal fade" id="addIncomeModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -356,8 +347,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Expense Modal -->
     <div class="modal fade" id="addExpenseModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -384,8 +373,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Portfolio Modal -->
     <div class="modal fade" id="portfolioModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -402,8 +389,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Portfolio Modal -->
     <div class="modal fade" id="addPortfolioModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -648,7 +633,6 @@
             if (period === 'week') loadWeeklyStats();
         };
 
-        // Initialize
         loadData();
     </script>
 </body>
